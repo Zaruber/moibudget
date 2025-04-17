@@ -47,6 +47,9 @@ function loadData() {
                 expense.incomeId = '';
             }
         });
+        
+        // Инициализируем фильтры доходов на основе загруженных данных
+        initIncomeFilters();
     } else {
         // Добавляем пример дохода, если нет сохраненных данных
         incomes.push({
@@ -71,7 +74,18 @@ function loadData() {
             amount: 10000,
             incomeId: ''
         });
+        
+        // Инициализируем фильтры для примера дохода
+        initIncomeFilters();
     }
+}
+
+// Инициализация фильтров доходов на основе существующих данных
+function initIncomeFilters() {
+    // Перебираем все доходы и создаем для них фильтры
+    incomes.forEach(income => {
+        addIncomeFilter(income.name);
+    });
 }
 
 // Сохранение данных
@@ -817,12 +831,31 @@ function removeIncome(incomeId) {
         return;
     }
     
+    // Получаем имя дохода перед удалением для удаления соответствующего фильтра
+    const incomeName = incomes[incomeIndex].name.toLowerCase();
+    
     // Удаляем все расходы, связанные с этим доходом
     fixedExpenses = fixedExpenses.filter(expense => expense.incomeId !== incomeId);
     variableExpenses = variableExpenses.filter(expense => expense.incomeId !== incomeId);
     
     // Удаляем сам доход
     incomes.splice(incomeIndex, 1);
+    
+    // Удаляем фильтр для этого дохода
+    const filterBtn = document.getElementById(`income-filter-${incomeName}`);
+    if (filterBtn) {
+        filterBtn.remove();
+    }
+    
+    // Если текущий фильтр указывает на удаленный доход, переключаемся на "Все"
+    if (currentFilter === incomeName) {
+        currentFilter = 'all';
+        const allFilterBtn = document.querySelector('.filter-btn[data-filter="all"]');
+        if (allFilterBtn) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            allFilterBtn.classList.add('active');
+        }
+    }
     
     // Сохраняем изменения
     saveData();
@@ -831,6 +864,8 @@ function removeIncome(incomeId) {
     removeSingleIncomeView();
     renderIncomes();
     renderExpenses();
+    updateForecastTable();
+    updateSummary();
     
     // Показываем уведомление
     showNotification('Доход и связанные расходы успешно удалены', 'success');
