@@ -1043,4 +1043,71 @@ canvas {
 
 .finance-item:hover .finance-item-actions {
     display: flex;
+}
+
+/* Стили для разворачивающихся строк в таблице прогноза */
+.expandable {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.expandable:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.toggle-icon.bi-chevron-down {
+    transform: rotate(90deg);
+}
+
+.detail-row {
+    background-color: rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.income-detail-row {
+    border-left: 3px solid #198754;
+    color: #198754;
+}
+
+.expense-detail-row {
+    border-left: 3px solid #dc3545;
+    color: #dc3545;
+}
+
+.detail-row td {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+/* Улучшение стилей для таблицы прогноза */
+.forecast-table {
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.forecast-table thead th {
+    padding: 12px 15px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+    border-bottom: 2px solid #f0f0f0;
+    background-color: #f9f9f9;
+}
+
+.forecast-table td {
+    padding: 15px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: none;
+    transition: background-color 0.2s;
 } 

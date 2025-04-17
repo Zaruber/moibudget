@@ -937,21 +937,128 @@ function updateForecastTable() {
     const decadeExpense = yearlyExpense * 10;
     const decadeBalance = decadeIncome - decadeExpense;
     
-    // Обновляем таблицу с проверкой наличия элементов
-    document.getElementById('monthly-income').textContent = `${formatNumber(totalMonthlyIncome)} ₽`;
-    document.getElementById('daily-income').textContent = `${formatNumber(dailyIncome)} ₽`;
-    document.getElementById('yearly-income').textContent = `${formatNumber(yearlyIncome)} ₽`;
-    document.getElementById('decade-income').textContent = `${formatNumber(decadeIncome)} ₽`;
+    // Получаем ссылки на таблицу и тело таблицы
+    const forecastTable = document.querySelector('.forecast-table');
+    const tableBody = forecastTable.querySelector('tbody');
     
-    document.getElementById('monthly-expense').textContent = `${formatNumber(totalExpenses)} ₽`;
-    document.getElementById('daily-expense').textContent = `${formatNumber(dailyExpense)} ₽`;
-    document.getElementById('yearly-expense').textContent = `${formatNumber(yearlyExpense)} ₽`;
-    document.getElementById('decade-expense').textContent = `${formatNumber(decadeExpense)} ₽`;
+    // Очищаем тело таблицы
+    tableBody.innerHTML = '';
     
-    document.getElementById('monthly-balance').textContent = `${formatNumber(monthlyBalance)} ₽`;
-    document.getElementById('daily-balance').textContent = `${formatNumber(dailyBalance)} ₽`;
-    document.getElementById('yearly-balance').textContent = `${formatNumber(yearlyBalance)} ₽`;
-    document.getElementById('decade-balance').textContent = `${formatNumber(decadeBalance)} ₽`;
+    // Создаем основную строку доходов с возможностью раскрытия
+    const incomeRow = document.createElement('tr');
+    incomeRow.className = 'income-row expandable';
+    incomeRow.innerHTML = `
+        <td><i class="bi bi-chevron-right me-1 toggle-icon"></i> Доходы</td>
+        <td id="monthly-income">${formatNumber(totalMonthlyIncome)} ₽</td>
+        <td id="daily-income">${formatNumber(dailyIncome)} ₽</td>
+        <td id="yearly-income">${formatNumber(yearlyIncome)} ₽</td>
+        <td id="decade-income">${formatNumber(decadeIncome)} ₽</td>
+    `;
+    tableBody.appendChild(incomeRow);
+    
+    // Добавляем обработчик для раскрытия/сворачивания доходов
+    incomeRow.addEventListener('click', function() {
+        toggleDetailRows(this, 'income');
+    });
+    
+    // Добавляем детализацию по доходам (скрыты по умолчанию)
+    incomes.forEach(income => {
+        const monthlyAmount = calculateMonthlyIncome(income);
+        const dailyAmount = monthlyAmount / 30;
+        const yearlyAmount = monthlyAmount * 12;
+        const decadeAmount = yearlyAmount * 10;
+        
+        const detailRow = document.createElement('tr');
+        detailRow.className = 'income-detail-row detail-row';
+        detailRow.style.display = 'none'; // Скрыт по умолчанию
+        detailRow.innerHTML = `
+            <td class="ps-4">${income.name}</td>
+            <td>${formatNumber(monthlyAmount)} ₽</td>
+            <td>${formatNumber(dailyAmount)} ₽</td>
+            <td>${formatNumber(yearlyAmount)} ₽</td>
+            <td>${formatNumber(decadeAmount)} ₽</td>
+        `;
+        tableBody.appendChild(detailRow);
+    });
+    
+    // Создаем основную строку расходов с возможностью раскрытия
+    const expenseRow = document.createElement('tr');
+    expenseRow.className = 'expense-row expandable';
+    expenseRow.innerHTML = `
+        <td><i class="bi bi-chevron-right me-1 toggle-icon"></i> Расходы</td>
+        <td id="monthly-expense">${formatNumber(totalExpenses)} ₽</td>
+        <td id="daily-expense">${formatNumber(dailyExpense)} ₽</td>
+        <td id="yearly-expense">${formatNumber(yearlyExpense)} ₽</td>
+        <td id="decade-expense">${formatNumber(decadeExpense)} ₽</td>
+    `;
+    tableBody.appendChild(expenseRow);
+    
+    // Добавляем обработчик для раскрытия/сворачивания расходов
+    expenseRow.addEventListener('click', function() {
+        toggleDetailRows(this, 'expense');
+    });
+    
+    // Объединяем все расходы в один массив
+    const allExpenses = [...fixedExpenses, ...variableExpenses];
+    
+    // Добавляем детализацию по расходам (скрыты по умолчанию)
+    allExpenses.forEach(expense => {
+        const monthlyAmount = parseFloat(expense.amount) || 0;
+        const dailyAmount = monthlyAmount / 30;
+        const yearlyAmount = monthlyAmount * 12;
+        const decadeAmount = yearlyAmount * 10;
+        
+        const detailRow = document.createElement('tr');
+        detailRow.className = 'expense-detail-row detail-row';
+        detailRow.style.display = 'none'; // Скрыт по умолчанию
+        detailRow.innerHTML = `
+            <td class="ps-4">${expense.name}</td>
+            <td>${formatNumber(monthlyAmount)} ₽</td>
+            <td>${formatNumber(dailyAmount)} ₽</td>
+            <td>${formatNumber(yearlyAmount)} ₽</td>
+            <td>${formatNumber(decadeAmount)} ₽</td>
+        `;
+        tableBody.appendChild(detailRow);
+    });
+    
+    // Создаем строку баланса
+    const balanceRow = document.createElement('tr');
+    balanceRow.className = 'balance-row';
+    balanceRow.innerHTML = `
+        <td>Остаток</td>
+        <td id="monthly-balance">${formatNumber(monthlyBalance)} ₽</td>
+        <td id="daily-balance">${formatNumber(dailyBalance)} ₽</td>
+        <td id="yearly-balance">${formatNumber(yearlyBalance)} ₽</td>
+        <td id="decade-balance">${formatNumber(decadeBalance)} ₽</td>
+    `;
+    tableBody.appendChild(balanceRow);
+}
+
+// Функция для раскрытия/сворачивания детализации
+function toggleDetailRows(row, type) {
+    // Находим иконку переключения в строке
+    const toggleIcon = row.querySelector('.toggle-icon');
+    
+    // Определяем класс для детализации
+    const detailClass = `${type}-detail-row`;
+    
+    // Находим все строки с детализацией
+    const detailRows = document.querySelectorAll(`.${detailClass}`);
+    
+    // Проверяем, раскрыты ли строки
+    const isExpanded = toggleIcon.classList.contains('bi-chevron-down');
+    
+    // Переключаем иконку
+    if (isExpanded) {
+        toggleIcon.classList.replace('bi-chevron-down', 'bi-chevron-right');
+    } else {
+        toggleIcon.classList.replace('bi-chevron-right', 'bi-chevron-down');
+    }
+    
+    // Переключаем видимость строк
+    detailRows.forEach(detailRow => {
+        detailRow.style.display = isExpanded ? 'none' : 'table-row';
+    });
 }
 
 // Показ модального окна с сообщением
