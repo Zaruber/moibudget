@@ -23,12 +23,12 @@
 
 1. Клонируйте репозиторий:
    ```
-   git clone https://github.com/Zaruber/moy-buget.git
+   git clone https://github.com/Zaruber/moibudget.git
    ```
 
 2. Откройте `index.html` в вашем браузере
 
-Или вы можете просто [открыть демо-версию](https://moy-buget.vercel.app/).
+Или вы можете просто [открыть демо-версию](https://moibudget.vercel.app/).
 
 ## Скриншоты
 
