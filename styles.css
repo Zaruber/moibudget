@@ -65,7 +65,23 @@ small {
 }
 
 .finance-card-body {
-    padding: 0;
+    padding: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.finance-card-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.finance-card-body::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.finance-card-body::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .finance-card-footer {
@@ -217,6 +233,22 @@ small {
 
 #forecast-card .finance-card-body {
     padding: 0;
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+#forecast-card .finance-card-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#forecast-card .finance-card-body::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+#forecast-card .finance-card-body::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 #forecast-card .finance-card-header {
@@ -1900,4 +1932,9 @@ canvas {
     .strategy-list li strong {
         font-size: 1rem;
     }
+}
+
+.table-responsive {
+    max-height: 380px;
+    overflow-y: auto;
 } 
