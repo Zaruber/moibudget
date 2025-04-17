@@ -1937,4 +1937,185 @@ canvas {
 .table-responsive {
     max-height: 380px;
     overflow-y: auto;
+}
+
+/* Рекламный блок */
+.ad-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    z-index: 1000;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: slideUp 0.5s ease-out;
+    display: none; /* Скрыто по умолчанию */
+}
+
+.ad-content {
+    position: relative;
+    width: 100%;
+}
+
+.ad-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.ad-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.ad-close-btn:hover {
+    background-color: #fff;
+    transform: scale(1.1);
+}
+
+.ad-cta-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: #3a7bd5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.ad-cta-btn:hover {
+    background-color: #2a6ac5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.ad-link {
+    display: block;
+    text-decoration: none;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 576px) {
+    .ad-container {
+        width: 95%;
+        bottom: 10px;
+    }
+    
+    .ad-cta-btn {
+        padding: 6px 16px;
+        font-size: 0.9rem;
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .ad-close-btn {
+        width: 24px;
+        height: 24px;
+        top: 8px;
+        right: 8px;
+    }
+}
+
+/* Пасхальный баннер */
+.easter-banner {
+    background: linear-gradient(135deg, #fef9c3, #fcd34d);
+    padding: 12px 20px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1050;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: none; /* Скрыт по умолчанию */
+}
+
+/* Добавляем отступ для body, чтобы баннер не перекрывал контент */
+body.has-easter-banner {
+    padding-top: 50px;
+}
+
+@media (max-width: 576px) {
+    body.has-easter-banner {
+        padding-top: 70px;
+    }
+    
+    .easter-banner p {
+        font-size: 0.9rem;
+        padding-right: 30px;
+    }
+    
+    .easter-close-btn {
+        width: 20px;
+        height: 20px;
+        right: 8px;
+    }
+}
+
+.easter-banner p {
+    margin: 0;
+    font-weight: 500;
+    color: #854d0e;
+    font-size: 1.1rem;
+}
+
+.easter-banner .easter-icon {
+    margin-right: 8px;
+    color: #ca8a04;
+}
+
+.easter-close-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #854d0e;
+}
+
+.easter-close-btn:hover {
+    background: rgba(255, 255, 255, 0.8);
 } 

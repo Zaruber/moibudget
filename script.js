@@ -6,6 +6,29 @@ let currentFilter = 'all';
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
+    // Обработка пасхального баннера
+    const easterBanner = document.getElementById('easter-banner');
+    const closeEasterBtn = document.getElementById('easter-close-btn');
+
+    if (easterBanner && closeEasterBtn) {
+        // Проверяем, закрывал ли пользователь баннер ранее
+        const isEasterBannerClosed = localStorage.getItem('easterBannerClosed');
+        
+        if (!isEasterBannerClosed) {
+            // Показываем баннер
+            easterBanner.style.display = 'block';
+            document.body.classList.add('has-easter-banner');
+            
+            // Обработчик закрытия баннера
+            closeEasterBtn.addEventListener('click', function() {
+                easterBanner.style.display = 'none';
+                document.body.classList.remove('has-easter-banner');
+                // Запоминаем, что пользователь закрыл баннер
+                localStorage.setItem('easterBannerClosed', 'true');
+            });
+        }
+    }
+
     // Загружаем данные из localStorage, если они есть
     loadData();
     
@@ -25,6 +48,32 @@ document.addEventListener('DOMContentLoaded', function() {
     // Инициализируем отображение текущей даты и времени
     updateDateTime();
     setInterval(updateDateTime, 1000); // Обновляем каждую секунду
+
+    // Обработка рекламного блока
+    const adBlock = document.getElementById('ad-block');
+    const closeAdBtn = document.getElementById('close-ad');
+
+    if (adBlock && closeAdBtn) {
+        // Проверяем, закрывал ли пользователь рекламу ранее
+        const isAdClosed = localStorage.getItem('adClosed');
+        
+        if (isAdClosed) {
+            adBlock.style.display = 'none';
+        } else {
+            // Показываем рекламный блок
+            setTimeout(() => {
+                adBlock.style.display = 'block';
+            }, 2000); // Показать через 2 секунды после загрузки
+            
+            // Обработчик закрытия рекламы
+            closeAdBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                adBlock.style.display = 'none';
+                // Запоминаем, что пользователь закрыл рекламу
+                localStorage.setItem('adClosed', 'true');
+            });
+        }
+    }
 });
 
 // Загрузка сохраненных данных

@@ -20,6 +20,12 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Пасхальный баннер -->
+    <div class="easter-banner" id="easter-banner">
+        <p><i class="bi bi-egg-fill easter-icon"></i> Поздравляем вас со светлым праздником Пасхи! Мира, добра и благополучия вашему дому!</p>
+        <button class="easter-close-btn" id="easter-close-btn"><i class="bi bi-x"></i></button>
+    </div>
+    
     <div class="container py-4" tabindex="-1">
         <!-- Заголовок приложения -->
         <div class="app-header mb-3">
@@ -152,6 +158,17 @@
 
         <!-- Контейнер для уведомлений -->
         <div id="notification-container"></div>
+        
+        <!-- Рекламный блок -->
+        <div class="ad-container" id="ad-block">
+            <div class="ad-content">
+                <button class="ad-close-btn" id="close-ad"><i class="bi bi-x-lg"></i></button>
+                <a href="https://www.tbank.ru/baf/7kuf1xxeOj2" target="_blank" class="ad-link">
+                    <img src="ads.png" alt="Специальное предложение" class="ad-image">
+                    <button class="ad-cta-btn">Оформить</button>
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- Подвал -->
