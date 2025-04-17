@@ -2,14 +2,14 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Стратегии накопления - Мой бюджет</title>
     <!-- Favicon и иконки для различных устройств -->
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="theme-color" content="#3a7bd5">
-    <!-- Подключаем шрифт Montserrat с Google Fonts -->
+    <!-- Подключаем шрифт Montserrat с Google Fonts с предзагрузкой для оптимизации -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <span class="text-success me-3"><i class="bi bi-circle-fill me-1 small"></i>Сегодня</span>
+                    <span class="text-success me-3 d-none d-sm-inline-block"><i class="bi bi-circle-fill me-1 small"></i>Сегодня</span>
                     <div class="date-selector">
                         <i class="bi bi-calendar3 me-1"></i>
                         <span>Загрузка...</span>
@@ -52,13 +52,13 @@
                 <h2><i class="bi bi-piggy-bank"></i> Стратегии накопления</h2>
             </div>
             <div class="finance-card-body p-4">
-                <div class="text-center py-5">
-                    <div class="mb-4">
-                        <i class="bi bi-tools" style="font-size: 3rem; color: #ccc;"></i>
+                <div class="text-center py-3 py-md-5">
+                    <div class="mb-3 mb-md-4">
+                        <i class="bi bi-tools" style="font-size: 2.5rem; color: #ccc;"></i>
                     </div>
-                    <h3>Раздел в разработке</h3>
-                    <p class="text-muted">Мы(я) работаем над созданием полезных инструментов для ваших финансовых целей. И наверное скоро этот раздел будет доступен.</p>
-                    <a href="index.html" class="btn btn-primary mt-3">
+                    <h3 class="fs-4 fs-md-3">Раздел в разработке</h3>
+                    <p class="text-muted small">Мы работаем над созданием полезных инструментов для ваших финансовых целей. Скоро этот раздел будет доступен.</p>
+                    <a href="index.html" class="btn btn-primary mt-2 mt-md-3">
                         <i class="bi bi-arrow-left me-2"></i>Вернуться в главное меню
                     </a>
                 </div>
@@ -72,45 +72,73 @@
     <!-- Подвал -->
     <footer class="footer mt-5 py-4">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-3 mb-md-0">
-                    <div class="d-flex align-items-center mb-2">
-                        <div class="app-logo me-2">
-                            <img src="money4-svgrepo-com.svg" alt="Мой бюджет" class="app-logo-img">
+            <!-- Десктопная версия подвала (скрывается на мобильных) -->
+            <div class="d-none d-md-block">
+                <div class="row g-4">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="d-flex align-items-center mb-2 justify-content-center justify-content-md-start">
+                            <div class="app-logo me-2">
+                                <img src="money4-svgrepo-com.svg" alt="Мой бюджет" class="app-logo-img">
+                            </div>
+                            <h5 class="mb-0">Мой бюджет</h5>
                         </div>
-                        <h5 class="mb-0">Мой бюджет</h5>
+                        <p class="footer-text">Простое и удобное приложение для управления личными финансами, учета доходов и расходов без регистрации и облачного хранения.</p>
                     </div>
-                    <p class="footer-text">Простое и удобное приложение для управления личными финансами, учета доходов и расходов без регистрации и облачного хранения.</p>
-                </div>
-                <div class="col-md-3 mb-3 mb-md-0">
-                    <h5 class="mb-3">Возможности</h5>
-                    <ul class="footer-links">
-                        <li><i class="bi bi-check2-circle me-1"></i> Учет доходов и расходов</li>
-                        <li><i class="bi bi-check2-circle me-1"></i> Детальная статистика</li>
-                        <li><i class="bi bi-check2-circle me-1"></i> Финансовое прогнозирование</li>
-                        <li><i class="bi bi-check2-circle me-1"></i> Работа без интернета</li>
-                    </ul>
-                </div>
-                <div class="col-md-3 mb-3 mb-md-0">
-                    <h5 class="mb-3">Ссылки</h5>
-                    <ul class="footer-links">
-                        <li><a href="index.html"><i class="bi bi-wallet2 me-1"></i> Мой бюджет</a></li>
-                        <li><a href="https://github.com/Zaruber/moy-buget" target="_blank"><i class="bi bi-github me-1"></i> GitHub</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-2">
-                    <h5 class="mb-3">Контакты</h5>
-                    <div class="social-links">
-                        <a href="https://t.me/mpsellerhelp" target="_blank" class="social-link"><i class="bi bi-telegram"></i></a>
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <h5 class="mb-3">Возможности</h5>
+                        <ul class="footer-links">
+                            <li><i class="bi bi-check2-circle me-1"></i> Учет доходов и расходов</li>
+                            <li><i class="bi bi-check2-circle me-1"></i> Детальная статистика</li>
+                            <li><i class="bi bi-check2-circle me-1"></i> Финансовое прогнозирование</li>
+                            <li><i class="bi bi-check2-circle me-1"></i> Работа без интернета</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <h5 class="mb-3">Ссылки</h5>
+                        <ul class="footer-links">
+                            <li><a href="index.html"><i class="bi bi-wallet2 me-1"></i> Мой бюджет</a></li>
+                            <li><a href="https://github.com/Zaruber/moy-buget" target="_blank"><i class="bi bi-github me-1"></i> GitHub</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2">
+                        <h5 class="mb-3">Контакты</h5>
+                        <div class="social-links">
+                            <a href="https://t.me/mpsellerhelp" target="_blank" class="social-link"><i class="bi bi-telegram"></i></a>
+                        </div>
                     </div>
                 </div>
+                <hr class="my-3">
             </div>
-            <hr class="my-3">
+            
+            <!-- Мобильная версия подвала (показывается только на мобильных) -->
+            <div class="d-md-none mobile-footer">
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <div class="app-logo me-2">
+                        <img src="money4-svgrepo-com.svg" alt="Мой бюджет" class="app-logo-img">
+                    </div>
+                    <h5 class="mb-0">Мой бюджет</h5>
+                </div>
+                
+                <div class="mobile-footer-links d-flex justify-content-center mb-3">
+                    <a href="index.html" class="btn btn-sm btn-outline-secondary mx-2">
+                        <i class="bi bi-wallet2"></i>
+                    </a>
+                    <a href="https://github.com/Zaruber/moy-buget" target="_blank" class="btn btn-sm btn-outline-secondary mx-2">
+                        <i class="bi bi-github"></i>
+                    </a>
+                    <a href="https://t.me/mpsellerhelp" target="_blank" class="btn btn-sm btn-outline-secondary mx-2">
+                        <i class="bi bi-telegram"></i>
+                    </a>
+                </div>
+                
+                <hr class="my-2">
+            </div>
+            
+            <!-- Общая часть для мобильных и десктопа -->
             <div class="d-flex justify-content-between align-items-center flex-wrap">
-                <p class="mb-0 text-muted">© 2025 Мой бюджет. Все права защищены. Правда это не точно.</p>
+                <p class="mb-2 mb-md-0 text-muted text-center text-md-start">© 2025 Мой бюджет</p>
                 <div class="footer-badges">
-                    <span class="badge bg-light text-dark me-2"><i class="bi bi-code-slash me-1"></i> Made with Cursor<i class="bi bi-heart-fill text-danger mx-1"></i></span>
-                    <span class="badge bg-light text-dark"><i class="bi bi-laptop me-1"></i> v1.0.0</span>
+                    <span class="badge bg-light text-dark"><i class="bi bi-laptop me-1"></i>v1.0.0</span>
                 </div>
             </div>
         </div>
