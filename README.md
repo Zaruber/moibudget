@@ -32,7 +32,10 @@
 
 ## Скриншоты
 
-![Главный экран приложения](screenshots/main.png)
+![Главная страница](screenshots/screenshot1.png)
+![Добавление дохода](screenshots/screenshot2.png)
+![Добавление расхода](screenshots/screenshot3.png)
+![Статистика](screenshots/screenshot4.png)
 
 ## Планы на будущее
 
