@@ -52,21 +52,201 @@
                 <h2><i class="bi bi-piggy-bank"></i> Стратегии накопления</h2>
             </div>
             <div class="finance-card-body p-4">
-                <div class="text-center py-3 py-md-5">
-                    <div class="mb-3 mb-md-4">
-                        <i class="bi bi-tools" style="font-size: 2.5rem; color: #ccc;"></i>
+                <!-- Десктопная версия карточек (показывается только на планшетах и выше) -->
+                <div class="row g-4 d-none d-md-flex">
+                    <!-- Вавилонская стратегия -->
+                    <div class="col-md-6">
+                        <div class="card h-100 strategy-card" data-bs-toggle="modal" data-bs-target="#babylonModal">
+                            <div class="card-body p-4 text-center">
+                                <div class="mb-3">
+                                    <i class="bi bi-coin" style="font-size: 2.5rem; color: #ffc107;"></i>
+                                </div>
+                                <h3 class="fs-4">Вавилонская стратегия</h3>
+                                <p class="text-muted">Принципы накопления из книги «Самый богатый человек в Вавилоне»</p>
+                                <button class="btn btn-outline-primary mt-3">
+                                    <i class="bi bi-info-circle me-2"></i>Подробнее
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="fs-4 fs-md-3">Раздел в разработке</h3>
-                    <p class="text-muted small">Мы работаем над созданием полезных инструментов для ваших финансовых целей. Скоро этот раздел будет доступен.</p>
-                    <a href="index.html" class="btn btn-primary mt-2 mt-md-3">
-                        <i class="bi bi-arrow-left me-2"></i>Вернуться в главное меню
-                    </a>
+                    
+                    <!-- Стратегия Богатый папа, бедный папа -->
+                    <div class="col-md-6">
+                        <div class="card h-100 strategy-card" data-bs-toggle="modal" data-bs-target="#richDadModal">
+                            <div class="card-body p-4 text-center">
+                                <div class="mb-3">
+                                    <i class="bi bi-cash-stack" style="font-size: 2.5rem; color: #28a745;"></i>
+                                </div>
+                                <h3 class="fs-4">Богатый папа, бедный папа</h3>
+                                <p class="text-muted">Стратегия накопления по книге Роберта Кийосаки</p>
+                                <button class="btn btn-outline-primary mt-3">
+                                    <i class="bi bi-info-circle me-2"></i>Подробнее
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Мобильная версия карточек (показывается только на мобильных) -->
+                <div class="d-md-none">
+                    <div class="strategy-swipe-container">
+                        <!-- Вавилонская стратегия (мобильная) -->
+                        <div class="strategy-swipe-card" data-bs-toggle="modal" data-bs-target="#babylonModal">
+                            <div class="strategy-swipe-icon">
+                                <i class="bi bi-coin" style="color: #ffc107;"></i>
+                            </div>
+                            <div class="strategy-swipe-content">
+                                <h3>Вавилонская стратегия</h3>
+                                <p>Принципы накопления из книги «Самый богатый человек в Вавилоне»</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Стратегия Богатый папа, бедный папа (мобильная) -->
+                        <div class="strategy-swipe-card" data-bs-toggle="modal" data-bs-target="#richDadModal">
+                            <div class="strategy-swipe-icon">
+                                <i class="bi bi-cash-stack" style="color: #28a745;"></i>
+                            </div>
+                            <div class="strategy-swipe-content">
+                                <h3>Богатый папа, бедный папа</h3>
+                                <p>Стратегия накопления по книге Роберта Кийосаки</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Здесь могут быть добавлены другие стратегии в будущем -->
+                    </div>
+                    <div class="swipe-hint text-center mt-2">
+                        <i class="bi bi-arrow-left-right"></i> Свайпайте для просмотра всех стратегий
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Контейнер для уведомлений -->
         <div id="notification-container"></div>
+    </div>
+
+    <!-- Модальное окно Вавилонской стратегии -->
+    <div class="modal fade" id="babylonModal" tabindex="-1" aria-labelledby="babylonModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="babylonModalLabel">Вавилонская стратегия накопления</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="mb-3">Принципы накопления из книги "Самый богатый человек в Вавилоне"</h4>
+                    
+                    <div class="card mb-4 bg-light">
+                        <div class="card-body">
+                            <p class="lead font-italic">"Часть того, что ты зарабатываешь, принадлежит тебе. Оставляй не менее одной десятой своего заработка себе – и только себе."</p>
+                        </div>
+                    </div>
+                    
+                    <h5>Семь правил обращения с деньгами:</h5>
+                    
+                    <div class="mb-4">
+                        <ol class="strategy-list">
+                            <li>
+                                <strong>Начни пополнять свой кошелек</strong>
+                                <p>Каждый десятый заработанный сестерций должен оставаться твоим и переходить в твой кошелек для будущих инвестиций.</p>
+                            </li>
+                            <li>
+                                <strong>Контролируй свои расходы</strong>
+                                <p>Контролируй свои расходы и не путай необходимые потребности с желаниями. Научись жить на 90% своего дохода.</p>
+                            </li>
+                            <li>
+                                <strong>Приумножай своё богатство</strong>
+                                <p>Заставь свои накопления работать, чтобы они производили для тебя "золотых детей", которые затем будут работать и давать "внуков".</p>
+                            </li>
+                            <li>
+                                <strong>Береги своё богатство от потерь</strong>
+                                <p>Вкладывай деньги только туда, где твой основной капитал защищен и есть возможность получить прибыль.</p>
+                            </li>
+                            <li>
+                                <strong>Сделай жилище доходной инвестицией</strong>
+                                <p>Владей собственным домом, но рассматривай его как инвестицию, а не только как жилье.</p>
+                            </li>
+                            <li>
+                                <strong>Обеспечь будущий доход</strong>
+                                <p>Работай над созданием стабильного источника дохода на будущее, чтобы обеспечить себя и свою семью.</p>
+                            </li>
+                            <li>
+                                <strong>Развивай свою способность зарабатывать</strong>
+                                <p>Постоянно развивай свои навыки и знания, чтобы увеличить свою способность зарабатывать.</p>
+                            </li>
+                        </ol>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        <strong>Ключевой принцип:</strong> Откладывай 10% от всего, что зарабатываешь, и инвестируй эти средства, чтобы они работали на тебя.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно стратегии Богатый папа, бедный папа -->
+    <div class="modal fade" id="richDadModal" tabindex="-1" aria-labelledby="richDadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="richDadModalLabel">Стратегия "Богатый папа, бедный папа"</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="mb-3">Принципы накопления из книги Роберта Кийосаки</h4>
+                    
+                    <div class="card mb-4 bg-light">
+                        <div class="card-body">
+                            <p class="lead font-italic">"Богатые не работают за деньги. Они заставляют деньги работать на себя."</p>
+                        </div>
+                    </div>
+                    
+                    <h5>Основные принципы финансовой независимости:</h5>
+                    
+                    <div class="mb-4">
+                        <ol class="strategy-list">
+                            <li>
+                                <strong>Различай активы и пассивы</strong>
+                                <p>Актив приносит деньги в карман, пассив забирает деньги из кармана. Бедные покупают пассивы, богатые – активы.</p>
+                            </li>
+                            <li>
+                                <strong>Создавай денежный поток</strong>
+                                <p>Фокусируйся на создании активов, генерирующих постоянный денежный поток, а не на увеличении зарплаты.</p>
+                            </li>
+                            <li>
+                                <strong>Обучайся финансовой грамотности</strong>
+                                <p>Развивай свою финансовую грамотность и инвестируй время в изучение способов создания и инвестирования капитала.</p>
+                            </li>
+                            <li>
+                                <strong>Работай на себя</strong>
+                                <p>Стремись создать собственный бизнес, который будет генерировать прибыль, даже если ты не присутствуешь физически.</p>
+                            </li>
+                            <li>
+                                <strong>Платите себе в первую очередь</strong>
+                                <p>Откладывай часть дохода для инвестиций до оплаты счетов и других расходов.</p>
+                            </li>
+                            <li>
+                                <strong>Используй силу корпораций</strong>
+                                <p>Юридические формы организации бизнеса могут обеспечивать налоговые преимущества и защиту активов.</p>
+                            </li>
+                        </ol>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        <strong>Квадрант денежного потока:</strong> Переходи из квадрантов наемного работника (E) и самозанятого (S) в квадранты владельца бизнеса (B) и инвестора (I), где деньги работают на тебя.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Подвал -->
@@ -175,10 +355,12 @@
             `;
         }
 
-        // Обновляем время при загрузке страницы
+        // Обработчики 
         document.addEventListener('DOMContentLoaded', function() {
             updateDateTime();
             setInterval(updateDateTime, 1000); // Обновляем каждую секунду
+            
+            // Удаляем эффект пульсации для кнопок
         });
     </script>
 </body>
