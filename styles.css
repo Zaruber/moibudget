@@ -602,6 +602,17 @@ canvas {
     background-color: #f8f9fa;
     border-radius: 4px;
     transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.expense-compact-item .expense-actions {
+    display: none;
+    position: absolute;
+    right: 70px;
+}
+
+.expense-compact-item:hover .expense-actions {
+    display: flex;
 }
 
 .expense-compact-item:hover {
@@ -743,8 +754,13 @@ canvas {
 }
 
 .finance-item-actions {
-    display: flex;
+    display: none;
+    align-items: center;
     gap: 5px;
+}
+
+.finance-item:hover .finance-item-actions {
+    display: flex;
 }
 
 .action-btn {
@@ -1008,4 +1024,23 @@ canvas {
         width: 20px;
         height: 20px;
     }
+}
+
+/* Стили для элементов действий */
+.finance-item-name-wrapper {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 10px;
+}
+
+.finance-item-actions {
+    display: none;
+    align-items: center;
+    gap: 5px;
+}
+
+.finance-item:hover .finance-item-actions {
+    display: flex;
 } 

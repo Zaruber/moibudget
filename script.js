@@ -614,6 +614,14 @@ function renderSingleIncome(income) {
             
             expenseItem.innerHTML = `
                 <div class="expense-name">${expense.name || expense.category || 'Без названия'}</div>
+                <div class="expense-actions">
+                    <button class="btn btn-sm btn-link p-0 me-2" title="Редактировать" onclick="event.stopPropagation(); showExpenseModal('${expense.id}', '${expense.type || (fixedExpenses.some(e => e.id === expense.id) ? 'fixed' : 'variable')}')">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-link text-danger p-0" title="Удалить" onclick="event.stopPropagation(); removeExpense('${expense.id}')">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
                 <div class="expense-amount">${formatNumber(expense.amount || 0)} ₽</div>
             `;
             
@@ -621,7 +629,7 @@ function renderSingleIncome(income) {
             expenseItem.style.cursor = 'pointer';
             if (expense.type !== 'receipt') {
                 expenseItem.addEventListener('click', () => {
-                    showExpenseModal(expense.id, expense.type || 'fixed');
+                    showExpenseModal(expense.id, expense.type || (fixedExpenses.some(e => e.id === expense.id) ? 'fixed' : 'variable'));
                 });
             } else {
                 expenseItem.title = 'Расход из чека';
@@ -725,25 +733,63 @@ function renderExpenses() {
         const expenseItem = document.createElement('div');
         expenseItem.className = 'finance-item';
         
+        // Создаем контейнер для имени и действий
+        const expenseNameWrapper = document.createElement('div');
+        expenseNameWrapper.className = 'finance-item-name-wrapper';
+        
         // Создаем элемент имени
         const expenseName = document.createElement('div');
         expenseName.className = 'finance-item-name';
         expenseName.textContent = expense.name || expense.category || 'Без названия';
+        
+        // Добавляем имя в контейнер
+        expenseNameWrapper.appendChild(expenseName);
+        
+        // Создаем контейнер для действий
+        const expenseActions = document.createElement('div');
+        expenseActions.className = 'finance-item-actions';
+        
+        // Создаем кнопку редактирования
+        const editButton = document.createElement('button');
+        editButton.className = 'btn btn-sm btn-link p-0 me-2';
+        editButton.innerHTML = '<i class="bi bi-pencil"></i>';
+        editButton.title = 'Редактировать';
+        editButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            showExpenseModal(expense.id, expense.type || (fixedExpenses.some(e => e.id === expense.id) ? 'fixed' : 'variable'));
+        });
+        
+        // Создаем кнопку удаления
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-sm btn-link text-danger p-0';
+        deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
+        deleteButton.title = 'Удалить';
+        deleteButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            removeExpense(expense.id);
+        });
+        
+        // Добавляем кнопки в контейнер действий
+        expenseActions.appendChild(editButton);
+        expenseActions.appendChild(deleteButton);
+        
+        // Добавляем контейнер действий в контейнер имени
+        expenseNameWrapper.appendChild(expenseActions);
         
         // Создаем элемент суммы
         const expenseAmount = document.createElement('div');
         expenseAmount.className = 'finance-item-amount';
         expenseAmount.textContent = formatNumber(amount) + ' ₽';
         
-        // Добавляем в контейнер
-        expenseItem.appendChild(expenseName);
+        // Добавляем в контейнер расхода
+        expenseItem.appendChild(expenseNameWrapper);
         expenseItem.appendChild(expenseAmount);
         
-        // Добавляем обработчик для редактирования при клике
+        // Добавляем обработчик для редактирования при клике на всю строку
         expenseItem.style.cursor = 'pointer';
         if (expense.type !== 'receipt') {
             expenseItem.addEventListener('click', () => {
-                showExpenseModal(expense.id, expense.type || 'fixed');
+                showExpenseModal(expense.id, expense.type || (fixedExpenses.some(e => e.id === expense.id) ? 'fixed' : 'variable'));
             });
         }
         
@@ -808,6 +854,25 @@ function removeVariableExpense(id) {
     renderIncomes();
     updateSummary();
     updateForecastTable();
+}
+
+// Удаление расхода (определяет тип и вызывает соответствующую функцию)
+function removeExpense(id) {
+    if (!confirm('Вы уверены, что хотите удалить этот расход?')) {
+        return;
+    }
+    
+    // Определяем, к какому типу относится расход
+    const isFixed = fixedExpenses.some(exp => exp.id === id);
+    
+    if (isFixed) {
+        removeFixedExpense(id);
+    } else {
+        removeVariableExpense(id);
+    }
+    
+    // Показываем уведомление
+    showNotification('Расход успешно удален', 'success');
 }
 
 // Обновление общей сводки
