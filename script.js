@@ -49,6 +49,44 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDateTime();
     setInterval(updateDateTime, 1000); // Обновляем каждую секунду
 
+    // Добавляем обработчик клика на блок баланса
+    const balanceCardBody = document.querySelector('.balance-card-body');
+    if (balanceCardBody) {
+        balanceCardBody.style.cursor = 'pointer';
+        balanceCardBody.addEventListener('click', function(e) {
+            // Не реагируем на клик по кнопке переключения графика на мобильных
+            if (e.target.closest('#toggle-chart-btn')) return;
+            
+            const balanceChartCard = document.getElementById('balance-chart-card');
+            if (balanceChartCard) {
+                if (balanceChartCard.style.display === 'none') {
+                    balanceChartCard.style.display = 'block';
+                    updateBalanceChart();
+                } else {
+                    balanceChartCard.style.display = 'none';
+                }
+            }
+        });
+    }
+    
+    // Добавляем обработчик для кнопки графика на мобильных устройствах
+    const toggleChartBtn = document.getElementById('toggle-chart-btn');
+    if (toggleChartBtn) {
+        toggleChartBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Предотвращаем всплытие события
+            
+            const balanceChartCard = document.getElementById('balance-chart-card');
+            if (balanceChartCard) {
+                if (balanceChartCard.style.display === 'none') {
+                    balanceChartCard.style.display = 'block';
+                    updateBalanceChart();
+                } else {
+                    balanceChartCard.style.display = 'none';
+                }
+            }
+        });
+    }
+
     // Обработка рекламного блока
     const adBlock = document.getElementById('ad-block');
     const closeAdBtn = document.getElementById('close-ad');
@@ -84,16 +122,29 @@ function loadData() {
         fixedExpenses = data.fixedExpenses || [];
         variableExpenses = data.variableExpenses || [];
         
-        // Проверяем, содержат ли расходы поле incomeId
+        // Проверяем, содержат ли доходы поле paymentDay
+        incomes.forEach(income => {
+            if (!('paymentDay' in income)) {
+                income.paymentDay = 1; // По умолчанию 1-е число
+            }
+        });
+        
+        // Проверяем, содержат ли расходы поле incomeId и paymentDay
         fixedExpenses.forEach(expense => {
             if (!('incomeId' in expense)) {
                 expense.incomeId = '';
+            }
+            if (!('paymentDay' in expense)) {
+                expense.paymentDay = 5; // По умолчанию 5-е число
             }
         });
         
         variableExpenses.forEach(expense => {
             if (!('incomeId' in expense)) {
                 expense.incomeId = '';
+            }
+            if (!('paymentDay' in expense)) {
+                expense.paymentDay = 10; // По умолчанию 10-е число
             }
         });
         
@@ -105,7 +156,16 @@ function loadData() {
             id: generateId(),
             name: 'Зарплата',
             amount: 50000,
-            frequency: 'monthly'
+            frequency: 'monthly',
+            paymentDay: 5 // 5-е число месяца
+        });
+        
+        incomes.push({
+            id: generateId(),
+            name: 'Аванс',
+            amount: 20000,
+            frequency: 'monthly',
+            paymentDay: 20 // 20-е число месяца
         });
         
         // Добавляем пример постоянного расхода
@@ -113,7 +173,8 @@ function loadData() {
             id: generateId(),
             name: 'Аренда жилья',
             amount: 20000,
-            incomeId: ''
+            incomeId: '',
+            paymentDay: 5 // 5-е число месяца
         });
         
         // Добавляем пример переменного расхода
@@ -121,10 +182,11 @@ function loadData() {
             id: generateId(),
             name: 'Продукты',
             amount: 10000,
-            incomeId: ''
+            incomeId: '',
+            paymentDay: 10 // 10-е число месяца
         });
         
-        // Инициализируем фильтры для примера дохода
+        // Инициализируем фильтры для примеров доходов
         initIncomeFilters();
     }
 }
@@ -202,15 +264,22 @@ function showIncomeModal(incomeId = null) {
     const incomeNameInput = document.getElementById('income-name');
     const incomeAmountInput = document.getElementById('income-amount');
     const incomeFrequencySelect = document.getElementById('income-frequency');
+    const incomeDayInput = document.getElementById('income-day');
     
     if (incomeId) {
         // Редактирование существующего дохода
         const income = incomes.find(inc => inc.id === incomeId);
+        if (!income) {
+            console.error('Доход не найден:', incomeId);
+            return;
+        }
+        
         modalTitle.textContent = 'Редактирование дохода';
         incomeIdInput.value = income.id;
         incomeNameInput.value = income.name;
         incomeAmountInput.value = income.amount;
         incomeFrequencySelect.value = income.frequency;
+        incomeDayInput.value = income.paymentDay || 1;
     } else {
         // Добавление нового дохода
         modalTitle.textContent = 'Добавление дохода';
@@ -218,6 +287,7 @@ function showIncomeModal(incomeId = null) {
         incomeNameInput.value = '';
         incomeAmountInput.value = '';
         incomeFrequencySelect.value = 'monthly';
+        incomeDayInput.value = 1; // По умолчанию 1-е число
     }
     
     const modal = new bootstrap.Modal(document.getElementById('incomeModal'));
@@ -227,6 +297,8 @@ function showIncomeModal(incomeId = null) {
 // Показать модальное окно добавления/редактирования расхода
 function showExpenseModal(expenseId = null, type = 'fixed', preselectedIncomeId = null) {
     // Заполняем форму данными
+    const expenseDayInput = document.getElementById('expense-day');
+    
     if (expenseId) {
         // Редактирование существующего расхода
         const expense = fixedExpenses.find(exp => exp.id === expenseId) || variableExpenses.find(exp => exp.id === expenseId);
@@ -242,6 +314,7 @@ function showExpenseModal(expenseId = null, type = 'fixed', preselectedIncomeId 
         document.getElementById('expense-amount').value = expense.amount;
         document.getElementById('expense-income').value = expense.incomeId;
         document.getElementById('expense-type').value = type;
+        expenseDayInput.value = expense.paymentDay || 1;
         
         // Устанавливаем заголовок модального окна
         document.getElementById('expenseModalTitle').textContent = 'Редактировать расход';
@@ -252,17 +325,16 @@ function showExpenseModal(expenseId = null, type = 'fixed', preselectedIncomeId 
         document.getElementById('expense-amount').value = '';
         document.getElementById('expense-income').value = preselectedIncomeId || '';
         document.getElementById('expense-type').value = type;
+        expenseDayInput.value = 1; // По умолчанию 1-е число
         
         // Устанавливаем заголовок модального окна
         document.getElementById('expenseModalTitle').textContent = 'Добавление расхода';
     }
     
-    // Устанавливаем правильный тип расхода
+    // Устанавливаем соответствующий тип расхода в радиокнопках
     if (type === 'fixed') {
         document.getElementById('fixed-expense-radio').checked = true;
-        document.getElementById('variable-expense-radio').checked = false;
     } else {
-        document.getElementById('fixed-expense-radio').checked = false;
         document.getElementById('variable-expense-radio').checked = true;
     }
     
@@ -276,9 +348,9 @@ function showExpenseModal(expenseId = null, type = 'fixed', preselectedIncomeId 
         expenseIncomeSelect.appendChild(option);
     });
     
-    // Открываем модальное окно
-    const expenseModal = new bootstrap.Modal(document.getElementById('expenseModal'));
-    expenseModal.show();
+    // Показываем модальное окно
+    const modal = new bootstrap.Modal(document.getElementById('expenseModal'));
+    modal.show();
 }
 
 // Сохранение дохода
@@ -287,9 +359,16 @@ function saveIncome() {
     const incomeName = document.getElementById('income-name').value;
     const incomeAmount = parseFloat(document.getElementById('income-amount').value) || 0;
     const incomeFrequency = document.getElementById('income-frequency').value;
+    const incomeDay = parseInt(document.getElementById('income-day').value) || 1;
     
     if (!incomeName) {
         showMessage('Ошибка', 'Необходимо указать название дохода');
+        return;
+    }
+    
+    // Проверка корректности даты
+    if (incomeDay < 1 || incomeDay > 31) {
+        showMessage('Ошибка', 'Дата должна быть между 1 и 31');
         return;
     }
     
@@ -299,6 +378,7 @@ function saveIncome() {
         income.name = incomeName;
         income.amount = incomeAmount;
         income.frequency = incomeFrequency;
+        income.paymentDay = incomeDay;
         
         // Если мы редактировали доход, который отображается в детальном виде,
         // нужно обновить представление детального просмотра
@@ -311,7 +391,8 @@ function saveIncome() {
             id: generateId(),
             name: incomeName,
             amount: incomeAmount,
-            frequency: incomeFrequency
+            frequency: incomeFrequency,
+            paymentDay: incomeDay
         };
         incomes.push(newIncome);
     }
@@ -339,6 +420,11 @@ function saveIncome() {
     updateSummary();
     updateFilterButtonsInfo();
     
+    // Обновляем график, если он видим
+    if (document.getElementById('balance-chart-card').style.display !== 'none') {
+        updateBalanceChart();
+    }
+    
     // Закрываем модальное окно
     bootstrap.Modal.getInstance(document.getElementById('incomeModal')).hide();
 }
@@ -350,9 +436,16 @@ function saveExpense() {
     const expenseName = document.getElementById('expense-name').value;
     const expenseAmount = parseFloat(document.getElementById('expense-amount').value) || 0;
     const expenseIncomeId = document.getElementById('expense-income').value;
+    const expenseDay = parseInt(document.getElementById('expense-day').value) || 1;
     
     if (!expenseName) {
         showMessage('Ошибка', 'Необходимо указать название расхода');
+        return;
+    }
+    
+    // Проверка корректности даты
+    if (expenseDay < 1 || expenseDay > 31) {
+        showMessage('Ошибка', 'Дата должна быть между 1 и 31');
         return;
     }
     
@@ -360,7 +453,8 @@ function saveExpense() {
         id: expenseId || generateId(),
         name: expenseName,
         amount: expenseAmount,
-        incomeId: expenseIncomeId
+        incomeId: expenseIncomeId,
+        paymentDay: expenseDay
     };
     
     if (expenseId) {
@@ -393,13 +487,18 @@ function saveExpense() {
     const modal = bootstrap.Modal.getInstance(document.getElementById('expenseModal'));
     modal.hide();
     
-    // Обновляем интерфейс
+    // Сохраняем изменения
     saveData();
     renderExpenses();
     renderIncomes();
     updateSummary();
     updateForecastTable();
     updateFilterButtonsInfo(expenseIncomeId);
+    
+    // Обновляем график, если он видим
+    if (document.getElementById('balance-chart-card').style.display !== 'none') {
+        updateBalanceChart();
+    }
 }
 
 // Добавление фильтра дохода
@@ -543,16 +642,61 @@ function renderIncomes() {
         
         // Отображаем список всех доходов
         if (incomes.length > 0) {
-            incomes.forEach(income => {
-        const monthlyAmount = calculateMonthlyIncome(income);
+            // Получаем текущую дату
+            const now = new Date();
+            const currentDay = now.getDate();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Сортируем доходы по дате поступления
+            const sortedIncomes = [...incomes].sort((a, b) => {
+                // Расчет дней до поступления для текущего месяца
+                const daysToA = getDaysUntilIncome(a.paymentDay, currentDay, daysInMonth);
+                const daysToB = getDaysUntilIncome(b.paymentDay, currentDay, daysInMonth);
+                return daysToA - daysToB;
+            });
+            
+            sortedIncomes.forEach(income => {
+                const monthlyAmount = calculateMonthlyIncome(income);
                 
                 const incomeItem = document.createElement('div');
                 incomeItem.className = 'finance-item';
                 
+                // Создаем контейнер для имени и информации о поступлении
+                const incomeNameWrapper = document.createElement('div');
+                incomeNameWrapper.className = 'finance-item-name-wrapper';
+                
                 // Создаем элемент имени
                 const incomeName = document.createElement('div');
                 incomeName.className = 'finance-item-name';
-                incomeName.textContent = income.name;
+                
+                // Рассчитываем дни до поступления
+                const daysToPayment = getDaysUntilIncome(income.paymentDay, currentDay, daysInMonth);
+                
+                // Создаем основной текст с названием дохода
+                let nameText = income.name;
+                
+                // Добавляем элемент имени с названием и днями до поступления
+                incomeName.innerHTML = `${nameText}`;
+                
+                // Создаем плашку с информацией о днях до поступления
+                const paymentBadge = document.createElement('span');
+                paymentBadge.className = 'payment-badge ms-2';
+                
+                if (daysToPayment === 0) {
+                    paymentBadge.classList.add('payment-today');
+                    paymentBadge.innerHTML = `<i class="bi bi-calendar-check"></i> Сегодня`;
+                } else if (daysToPayment <= 3) {
+                    paymentBadge.classList.add('payment-soon');
+                    paymentBadge.innerHTML = `<i class="bi bi-calendar-event"></i> Через ${daysToPayment} ${getDaysWord(daysToPayment)}`;
+                } else {
+                    paymentBadge.classList.add('payment-later');
+                    paymentBadge.innerHTML = `<i class="bi bi-calendar"></i> ${income.paymentDay}-го числа`;
+                }
+                
+                incomeName.appendChild(paymentBadge);
+                incomeNameWrapper.appendChild(incomeName);
                 
                 // Создаем элемент суммы
                 const incomeAmount = document.createElement('div');
@@ -560,7 +704,7 @@ function renderIncomes() {
                 incomeAmount.textContent = formatNumber(monthlyAmount) + ' ₽';
                 
                 // Добавляем в контейнер
-                incomeItem.appendChild(incomeName);
+                incomeItem.appendChild(incomeNameWrapper);
                 incomeItem.appendChild(incomeAmount);
                 
                 // Делаем всю строку кликабельной для фильтрации
@@ -588,6 +732,29 @@ function renderIncomes() {
     }
 }
 
+// Функция для вычисления количества дней до поступления дохода
+function getDaysUntilIncome(paymentDay, currentDay, daysInMonth) {
+    if (paymentDay === currentDay) {
+        return 0; // Доход поступает сегодня
+    } else if (paymentDay > currentDay) {
+        return paymentDay - currentDay; // Доход поступит в этом месяце
+    } else {
+        // Доход поступит в следующем месяце
+        return daysInMonth - currentDay + paymentDay;
+    }
+}
+
+// Функция для склонения слова "день" в зависимости от числа
+function getDaysWord(days) {
+    if (days === 1) {
+        return 'день';
+    } else if (days >= 2 && days <= 4) {
+        return 'дня';
+    } else {
+        return 'дней';
+    }
+}
+
 // Функция для удаления вида детального просмотра дохода
 function removeSingleIncomeView() {
     const existingView = document.getElementById('single-income-view');
@@ -603,6 +770,31 @@ function renderSingleIncome(income) {
     
     // Сначала удаляем существующее представление, если оно уже есть
     removeSingleIncomeView();
+    
+    // Получаем текущую дату для расчета дней до поступления
+    const now = new Date();
+    const currentDay = now.getDate();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    // Рассчитываем дни до поступления
+    const daysToPayment = getDaysUntilIncome(income.paymentDay, currentDay, daysInMonth);
+    
+    // Создаем текст плашки
+    let paymentInfo = '';
+    let paymentClass = '';
+    
+    if (daysToPayment === 0) {
+        paymentInfo = '<i class="bi bi-calendar-check"></i> Поступает сегодня';
+        paymentClass = 'payment-today';
+    } else if (daysToPayment <= 3) {
+        paymentInfo = `<i class="bi bi-calendar-event"></i> Поступает через ${daysToPayment} ${getDaysWord(daysToPayment)}`;
+        paymentClass = 'payment-soon';
+    } else {
+        paymentInfo = `<i class="bi bi-calendar"></i> Поступает ${income.paymentDay}-го числа`;
+        paymentClass = 'payment-later';
+    }
     
     // Создаем элемент для отображения одного дохода
     const singleIncomeView = document.createElement('div');
@@ -621,7 +813,10 @@ function renderSingleIncome(income) {
             <div class="single-income-top">
                 <div class="income-title-area">
                     <h3>${income.name}</h3>
-                    <span class="income-frequency">${getFrequencyText(income.frequency)}</span>
+                    <div class="d-flex align-items-center">
+                        <span class="income-frequency">${getFrequencyText(income.frequency)}</span>
+                        <span class="payment-badge ms-2 ${paymentClass}">${paymentInfo}</span>
+                    </div>
                 </div>
                 <div class="single-income-actions">
                     <button class="btn btn-sm btn-outline-primary me-1" onclick="showIncomeModal('${income.id}')">
@@ -916,6 +1111,11 @@ function removeIncome(incomeId) {
     updateForecastTable();
     updateSummary();
     
+    // Обновляем график, если он видим
+    if (document.getElementById('balance-chart-card').style.display !== 'none') {
+        updateBalanceChart();
+    }
+    
     // Показываем уведомление
     showNotification('Доход и связанные расходы успешно удалены', 'success');
 }
@@ -957,6 +1157,11 @@ function removeExpense(id) {
     
     // Показываем уведомление
     showNotification('Расход успешно удален', 'success');
+    
+    // Обновляем график, если он видим
+    if (document.getElementById('balance-chart-card').style.display !== 'none') {
+        updateBalanceChart();
+    }
 }
 
 // Обновление общей сводки
@@ -1250,4 +1455,180 @@ function updateDateTime() {
         <i class="bi bi-calendar3 me-1"></i>
         <span>${dateStr} - ${timeStr}</span>
     `;
+}
+
+// Функция для обновления графика баланса
+function updateBalanceChart() {
+    const ctx = document.getElementById('balance-chart').getContext('2d');
+    
+    // Если уже есть график, уничтожаем его
+    if (window.balanceChart) {
+        window.balanceChart.destroy();
+    }
+    
+    // Получаем текущую дату
+    const now = new Date();
+    const currentDay = now.getDate();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    // Определяем количество дней в текущем месяце
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    // Создаем метки для оси X (дни месяца)
+    const daysLabels = Array.from({length: daysInMonth}, (_, i) => `${i + 1}`);
+    
+    // Инициализируем массивы для данных
+    const dailyChanges = Array(daysInMonth).fill(0); // Изменения за день
+    const runningBalance = Array(daysInMonth).fill(0); // Текущий остаток на каждый день
+    
+    // Рассчитываем ежедневные изменения в балансе
+    incomes.forEach(income => {
+        const day = income.paymentDay - 1; // Индексация с 0
+        if (day >= 0 && day < daysInMonth) {
+            dailyChanges[day] += calculateMonthlyIncome(income);
+        }
+    });
+    
+    // Вычитаем расходы
+    [...fixedExpenses, ...variableExpenses].forEach(expense => {
+        const day = expense.paymentDay - 1; // Индексация с 0
+        if (day >= 0 && day < daysInMonth) {
+            dailyChanges[day] -= parseFloat(expense.amount);
+        }
+    });
+    
+    // Рассчитываем баланс на каждый день месяца нарастающим итогом
+    let balance = 0;
+    for (let i = 0; i < daysInMonth; i++) {
+        balance += dailyChanges[i];
+        runningBalance[i] = balance;
+    }
+    
+    // Название месяца для заголовка
+    const monthNames = [
+        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 
+        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+    ];
+    const monthName = monthNames[currentMonth];
+    
+    // Проверяем, является ли устройство мобильным
+    const isMobile = window.innerWidth <= 576;
+    
+    // Создаем новый график
+    window.balanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: daysLabels,
+            datasets: [
+                {
+                    label: 'Остаток',
+                    data: runningBalance,
+                    fill: false,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1,
+                    pointRadius: isMobile ? 3 : 3,
+                    borderWidth: isMobile ? 2 : 3,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(200, 200, 200, 0.1)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return formatNumber(value) + ' ₽';
+                        },
+                        font: {
+                            size: isMobile ? 11 : 12
+                        },
+                        maxTicksLimit: isMobile ? 6 : 8
+                    }
+                },
+                x: {
+                    title: {
+                        display: !isMobile,
+                        text: 'День месяца'
+                    },
+                    ticks: {
+                        font: {
+                            size: isMobile ? 11 : 12
+                        },
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: isMobile ? 10 : 15
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            return `${tooltipItems[0].label} ${monthName}`;
+                        },
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += formatNumber(context.parsed.y) + ' ₽';
+                            }
+                            return label;
+                        }
+                    }
+                },
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: isMobile ? `${monthName} ${currentYear}` : `Динамика остатка: ${monthName} ${currentYear}`,
+                    font: {
+                        size: isMobile ? 14 : 16
+                    },
+                    padding: isMobile ? 5 : 10
+                }
+            }
+        }
+    });
+    
+    // Маркер текущего дня
+    if (currentDay > 0 && currentDay <= daysInMonth) {
+        // Добавляем вертикальную линию для текущего дня
+        const currentDayLine = {
+            type: 'line',
+            xMin: currentDay - 0.5,
+            xMax: currentDay - 0.5,
+            borderColor: 'rgba(255, 99, 132, 0.8)',
+            borderWidth: isMobile ? 1.5 : 2,
+            borderDash: [5, 5],
+            label: {
+                enabled: !isMobile,
+                content: 'Сегодня',
+                position: 'top'
+            }
+        };
+        
+        // Добавляем аннотацию, если у графика уже есть аннотации
+        if (!window.balanceChart.options.plugins.annotation) {
+            window.balanceChart.options.plugins.annotation = {
+                annotations: {
+                    currentDayLine
+                }
+            };
+        } else {
+            window.balanceChart.options.plugins.annotation.annotations.currentDayLine = currentDayLine;
+        }
+        
+        window.balanceChart.update();
+    }
 } 

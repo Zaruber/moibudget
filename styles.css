@@ -165,11 +165,19 @@ small {
 }
 
 .balance-card-body {
-    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: 500;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.balance-card-body:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
 .balance-amount {
@@ -313,7 +321,7 @@ small {
 }
 
 .item-actions {
-    margin-left: 10px;
+    margin-left: 20px;
     display: flex;
     gap: 10px;
     opacity: 0.3;
@@ -497,7 +505,7 @@ canvas {
 }
 
 /* Стили для мобильной версии */
-@media (max-width: 767.98px) {
+@media (max-width: 576px) {
     .card-body {
         padding: 1rem;
     }
@@ -514,6 +522,32 @@ canvas {
     
     .income-summary .row div {
         font-size: 0.9rem;
+    }
+    
+    /* Кнопка переключения графика */
+    #toggle-chart-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: all 0.2s ease;
+        background-color: #f8f9fa;
+        border-color: #e9ecef;
+        color: #6c757d;
+    }
+    
+    #toggle-chart-btn:active {
+        background-color: #e9ecef;
+        transform: scale(0.95);
+    }
+    
+    #toggle-chart-btn i {
+        font-size: 1rem;
     }
 }
 
@@ -640,7 +674,7 @@ canvas {
 .expense-compact-item .expense-actions {
     display: none;
     position: absolute;
-    right: 70px;
+    right: 85px;
 }
 
 .expense-compact-item:hover .expense-actions {
@@ -789,6 +823,7 @@ canvas {
     display: none;
     align-items: center;
     gap: 5px;
+    margin-left: 10px;
 }
 
 .finance-item:hover .finance-item-actions {
@@ -1561,18 +1596,40 @@ canvas {
         padding: 0.35rem 0.5rem;
     }
     
-    /* Показываем только самые важные столбцы на маленьких экранах */
-    .forecast-table th:nth-child(3), 
-    .forecast-table td:nth-child(3),
-    .forecast-table th:nth-child(5),
-    .forecast-table td:nth-child(5) {
-        display: none;
+    /* Включаем горизонтальную прокрутку для таблицы на маленьких экранах */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 1rem;
+    }
+    
+    /* Устанавливаем минимальную ширину для ячеек таблицы */
+    .forecast-table th,
+    .forecast-table td {
+        white-space: nowrap;
+        min-width: 70px;
     }
     
     /* Расширяем первый столбец для лучшей читаемости названий */
     .forecast-table th:first-child,
     .forecast-table td:first-child {
         min-width: 100px;
+        position: sticky;
+        left: 0;
+        background-color: #fff;
+        z-index: 1;
+    }
+    
+    /* Добавляем индикатор прокрутки */
+    .finance-card-body .table-responsive:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 15px;
+        background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.8));
+        pointer-events: none;
     }
 }
 
@@ -2118,4 +2175,114 @@ body.has-easter-banner {
 
 .easter-close-btn:hover {
     background: rgba(255, 255, 255, 0.8);
+}
+
+/* Стили для плашек о днях до поступления дохода */
+.payment-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 12px;
+    margin-left: 8px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.payment-today {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.payment-soon {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.payment-later {
+    background-color: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+
+.payment-badge i {
+    margin-right: 3px;
+    font-size: 0.7rem;
+}
+
+/* Стили для мобильных устройств */
+@media (max-width: 576px) {
+    .payment-badge {
+        font-size: 0.7rem;
+        padding: 1px 4px;
+    }
+    
+    .payment-badge i {
+        font-size: 0.65rem;
+    }
+}
+
+/* Стили для графика баланса */
+#balance-chart-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+}
+
+#balance-chart-card .finance-card-header {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+#balance-chart-card .finance-card-body {
+    padding: 1rem;
+}
+
+#balance-chart {
+    max-height: 300px;
+}
+
+/* Мобильная версия для блока баланса и графика */
+@media (max-width: 576px) {
+    .balance-card-body {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .balance-card-body .d-flex {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .balance-card-body small {
+        font-size: 0.7rem;
+    }
+    
+    .balance-amount {
+        width: 100%;
+        text-align: center;
+        font-size: 1.75rem;
+    }
+    
+    #balance-chart-card {
+        margin-top: -0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    #balance-chart {
+        min-height: 250px;
+        max-height: 250px;
+    }
+    
+    #balance-chart-card .finance-card-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    #balance-chart-card .finance-card-body {
+        padding: 0.75rem 0.5rem;
+        height: auto;
+    }
 } 
