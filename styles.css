@@ -1110,4 +1110,110 @@ canvas {
     font-weight: 500;
     border: none;
     transition: background-color 0.2s;
+}
+
+/* Стили для футера */
+.footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    color: #495057;
+}
+
+.footer h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.footer-text {
+    color: #6c757d;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.footer-links {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+.footer-links a {
+    color: #495057;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.social-links {
+    display: flex;
+    gap: 12px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    color: #fff;
+    background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    color: #fff;
+}
+
+.social-link i {
+    font-size: 1.2rem;
+}
+
+.footer-badges .badge {
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e0e0e0;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 767.98px) {
+    .footer {
+        text-align: center;
+    }
+    
+    .social-links {
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+    
+    .footer .row {
+        row-gap: 1.5rem;
+    }
+    
+    .footer-badges {
+        margin-top: 1rem;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .d-flex.justify-content-between .mb-0 {
+        margin-bottom: 1rem !important;
+    }
 } 
