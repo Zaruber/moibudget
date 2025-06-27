@@ -53,9 +53,36 @@ small {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 18px 20px;
     border-bottom: 1px solid #f0f0f0;
     background-color: #f9f9f9;
+}
+
+.finance-card-title {
+    display: flex;
+    align-items: center;
+}
+
+.finance-card-title i {
+    font-size: 1.2rem;
+}
+
+.income-card {
+    border-left: 3px solid #198754;
+}
+
+.expense-card {
+    border-left: 3px solid #dc3545;
+}
+
+.income-total {
+    color: #198754;
+    font-weight: 600;
+}
+
+.expense-total {
+    color: #dc3545;
+    font-weight: 600;
 }
 
 .finance-card-header h2 {
@@ -92,10 +119,27 @@ small {
 
 /* Фильтры доходов */
 .income-filters {
+    margin-bottom: 1rem;
+}
+
+.filters-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filters-group {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
+}
+
+.actions-group {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
 }
 
 /* Модификация стилей для кнопок фильтров */
@@ -165,14 +209,25 @@ small {
 }
 
 .balance-card-body {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 1.5rem;
     background-color: #f8f9fa;
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.balance-header {
+    margin-bottom: 0.75rem;
+}
+
+.balance-info .balance-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+}
+
+.balance-amount-wrapper {
+    text-align: center;
 }
 
 .balance-card-body:hover {
@@ -1002,6 +1057,21 @@ canvas {
 
 .app-title:hover {
     color: #007bff;
+}
+
+.app-subtitle {
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin-top: 0.25rem;
+    opacity: 0.8;
+}
+
+.status-indicator {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    background-color: rgba(25, 135, 84, 0.1);
 }
 
 .app-title.dropdown-toggle::after {
@@ -2215,5 +2285,43 @@ canvas {
     #balance-chart-card .finance-card-body {
         padding: 0.75rem 0.5rem;
         height: auto;
+    }
+    
+    /* Адаптивность для новых элементов */
+    .filters-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .actions-group {
+        margin-left: 0;
+        justify-content: center;
+    }
+    
+    .balance-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .balance-amount-wrapper {
+        text-align: left;
+        width: 100%;
+    }
+    
+    .finance-card-title {
+        margin-bottom: 0.5rem;
+    }
+    
+    .finance-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .app-subtitle {
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
     }
 } 

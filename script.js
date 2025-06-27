@@ -495,29 +495,32 @@ function addIncomeFilter(incomeName) {
         // Добавляем обработчик событий
         filterBtn.addEventListener('click', function() {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        
+            this.classList.add('active');
+            
             // Получаем значение фильтра
             currentFilter = this.dataset.filter || 'all';
             
-            // Если это фильтр "Все", удаляем детальное представление дохода
+            // Если это фильтр "Все доходы", удаляем детальное представление дохода и показываем прогноз
             if (currentFilter === 'all') {
                 removeSingleIncomeView();
+                document.getElementById('forecast-card').style.display = 'block';
+            } else {
+                // Скрываем прогноз при выборе конкретного дохода
+                document.getElementById('forecast-card').style.display = 'none';
             }
             
             // Обновляем интерфейс
-        renderIncomes();
-        renderExpenses();
+            renderIncomes();
+            renderExpenses();
             updateFilterButtonsInfo(currentFilter);
         });
         
-        // Находим кнопку "Добавить доход" для вставки перед ней
-        const addIncomeBtn = document.getElementById('add-income');
-        const filtersContainer = document.querySelector('.income-filters');
+        // Находим контейнер фильтров внутри новой структуры
+        const filtersGroup = document.querySelector('.filters-group');
         
-        // Вставляем кнопку фильтра перед кнопкой добавления
-        if (filtersContainer && addIncomeBtn) {
-            filtersContainer.insertBefore(filterBtn, addIncomeBtn);
+        // Вставляем кнопку фильтра в группу фильтров
+        if (filtersGroup) {
+            filtersGroup.appendChild(filterBtn);
         }
     }
 }
@@ -1216,7 +1219,11 @@ function updateForecastTable() {
     const incomeRow = document.createElement('tr');
     incomeRow.className = 'income-row expandable';
     incomeRow.innerHTML = `
-        <td><i class="bi bi-chevron-right me-1 toggle-icon"></i> Доходы</td>
+        <td>
+            <i class="bi bi-chevron-right me-1 toggle-icon"></i>
+            <i class="bi bi-arrow-up-circle text-success me-1"></i>
+            Доходы
+        </td>
         <td id="monthly-income">${formatNumber(totalMonthlyIncome)} ₽</td>
         <td id="daily-income">${formatNumber(dailyIncome)} ₽</td>
         <td id="yearly-income">${formatNumber(yearlyIncome)} ₽</td>
@@ -1253,7 +1260,11 @@ function updateForecastTable() {
     const expenseRow = document.createElement('tr');
     expenseRow.className = 'expense-row expandable';
     expenseRow.innerHTML = `
-        <td><i class="bi bi-chevron-right me-1 toggle-icon"></i> Расходы</td>
+        <td>
+            <i class="bi bi-chevron-right me-1 toggle-icon"></i>
+            <i class="bi bi-arrow-down-circle text-danger me-1"></i>
+            Расходы
+        </td>
         <td id="monthly-expense">${formatNumber(totalExpenses)} ₽</td>
         <td id="daily-expense">${formatNumber(dailyExpense)} ₽</td>
         <td id="yearly-expense">${formatNumber(yearlyExpense)} ₽</td>
@@ -1293,7 +1304,10 @@ function updateForecastTable() {
     const balanceRow = document.createElement('tr');
     balanceRow.className = 'balance-row';
     balanceRow.innerHTML = `
-        <td>Остаток</td>
+        <td>
+            <i class="bi bi-wallet2 text-primary me-1"></i>
+            Остаток
+        </td>
         <td id="monthly-balance">${formatNumber(monthlyBalance)} ₽</td>
         <td id="daily-balance">${formatNumber(dailyBalance)} ₽</td>
         <td id="yearly-balance">${formatNumber(yearlyBalance)} ₽</td>
@@ -1339,14 +1353,21 @@ function showMessage(title, message) {
 
 // Обновление информации на кнопках фильтрации
 function updateFilterButtonsInfo(selectedIncomeId = null) {
-    // Обновляем общий фильтр "Все"
+    // Обновляем общий фильтр "Все доходы"
     const allFilterBtn = document.querySelector('.filter-btn[data-filter="all"]');
     if (allFilterBtn) {
         const totalExpenses = calculateTotalExpenses();
         if (totalExpenses > 0) {
-            allFilterBtn.innerHTML = `Все <span class="filter-expenses">${formatNumber(totalExpenses)} ₽</span>`;
+            allFilterBtn.innerHTML = `
+                <i class="bi bi-grid-3x3-gap me-1"></i>
+                <span>Все доходы</span>
+                <span class="filter-expenses">${formatNumber(totalExpenses)} ₽</span>
+            `;
         } else {
-            allFilterBtn.textContent = 'Все';
+            allFilterBtn.innerHTML = `
+                <i class="bi bi-grid-3x3-gap me-1"></i>
+                <span>Все доходы</span>
+            `;
         }
     }
     

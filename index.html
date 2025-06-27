@@ -23,10 +23,11 @@
     
     <div class="container py-4" tabindex="-1">
         <!-- Заголовок приложения -->
-        <div class="app-header mb-3">
-            <div class="d-flex justify-content-between align-items-center">
+        <div class="app-header mb-4">
+            <!-- Главная строка заголовка -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="d-flex align-items-center">
-                    <div class="app-logo me-2">
+                    <div class="app-logo me-3">
                         <img src="money4-svgrepo-com.svg" alt="Мой бюджет" class="app-logo-img">
                     </div>
                     <div class="dropdown">
@@ -40,38 +41,58 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <span class="text-success me-3 d-none d-sm-inline-block"><i class="bi bi-circle-fill me-1 small"></i>Сегодня</span>
+                    <span class="status-indicator text-success me-3 d-none d-md-inline-flex align-items-center">
+                        <i class="bi bi-circle-fill me-1 small"></i>Активен
+                    </span>
                     <div class="date-selector">
                         <i class="bi bi-calendar3 me-1"></i>
                         <span>Загрузка...</span>
                     </div>
                 </div>
             </div>
+            <!-- Подзаголовок -->
+            <div class="app-subtitle text-muted d-none d-md-block">
+                Простое управление личными финансами
+            </div>
         </div>
 
         <!-- Фильтры доходов -->
         <div class="income-filters mb-4">
-            <button class="filter-btn active" data-filter="all">Все</button>
-            <button class="filter-btn add-btn" id="add-income">
-                <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Создать доход</span><span class="d-inline d-sm-none">Доход</span>
-            </button>
+            <div class="filters-section">
+                <div class="filters-group">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="bi bi-grid-3x3-gap me-1"></i>
+                        <span>Все доходы</span>
+                    </button>
+                </div>
+                <div class="actions-group">
+                    <button class="filter-btn add-btn" id="add-income">
+                        <i class="bi bi-plus-lg me-1"></i> 
+                        <span class="d-none d-sm-inline">Создать доход</span>
+                        <span class="d-inline d-sm-none">Добавить</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Основные блоки -->
         <div class="row mb-4 g-3">
             <!-- Левый блок - доходы -->
             <div class="col-md-6">
-                <div class="finance-card" id="income-card">
+                <div class="finance-card income-card" id="income-card">
                     <div class="finance-card-header">
-                        <h2>Все Доходы</h2>
-                        <div class="finance-total" id="total-income-display">0 ₽/мес</div>
+                        <div class="finance-card-title">
+                            <i class="bi bi-arrow-up-circle text-success me-2"></i>
+                            <h2>Доходы</h2>
+                        </div>
+                        <div class="finance-total income-total" id="total-income-display">0 ₽/мес</div>
                     </div>
                     <div class="finance-card-body" id="income-list">
                         <!-- Здесь будут отображаться доходы -->
                     </div>
                     <div class="finance-card-footer">
-                        <button class="add-btn-link" id="add-income-link">
-                            <i class="bi bi-plus-lg"></i> Добавить доход
+                        <button class="add-btn-link income-add-btn" id="add-income-link">
+                            <i class="bi bi-plus-lg me-1"></i> Добавить доход
                         </button>
                     </div>
                 </div>
@@ -79,17 +100,20 @@
 
             <!-- Правый блок - расходы -->
             <div class="col-md-6">
-                <div class="finance-card" id="expense-card">
+                <div class="finance-card expense-card" id="expense-card">
                     <div class="finance-card-header">
-                        <h2>Все Расходы</h2>
-                        <div class="finance-total" id="total-expenses-display">0 ₽/мес</div>
+                        <div class="finance-card-title">
+                            <i class="bi bi-arrow-down-circle text-danger me-2"></i>
+                            <h2>Расходы</h2>
+                        </div>
+                        <div class="finance-total expense-total" id="total-expenses-display">0 ₽/мес</div>
                     </div>
                     <div class="finance-card-body" id="expense-list">
                         <!-- Здесь будут отображаться расходы -->
                     </div>
                     <div class="finance-card-footer">
-                        <button class="add-btn-link" id="add-expense-link">
-                            <i class="bi bi-plus-lg"></i> Добавить расход
+                        <button class="add-btn-link expense-add-btn" id="add-expense-link">
+                            <i class="bi bi-plus-lg me-1"></i> Добавить расход
                         </button>
                     </div>
                 </div>
@@ -99,14 +123,23 @@
         <!-- Остаток -->
         <div class="balance-card mb-4">
             <div class="balance-card-body">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-wallet2 me-2"></i> Остаток
-                    <small class="ms-2 text-muted d-none d-sm-inline"><i class="bi bi-info-circle"></i> Нажмите для отображения графика</small>
-                    <button class="btn btn-sm btn-outline-info ms-auto d-inline d-sm-none" id="toggle-chart-btn">
+                <div class="balance-header d-flex justify-content-between align-items-start mb-2">
+                    <div class="balance-info">
+                        <div class="d-flex align-items-center mb-1">
+                            <i class="bi bi-wallet2 me-2 text-primary"></i>
+                            <span class="balance-label">Текущий остаток</span>
+                        </div>
+                        <small class="text-muted d-none d-sm-block">
+                            <i class="bi bi-info-circle me-1"></i>Нажмите для отображения графика
+                        </small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-info d-inline d-sm-none" id="toggle-chart-btn">
                         <i class="bi bi-graph-up"></i>
                     </button>
                 </div>
-                <span class="balance-amount" id="balance-display">0 ₽</span>
+                <div class="balance-amount-wrapper">
+                    <span class="balance-amount" id="balance-display">0 ₽</span>
+                </div>
             </div>
         </div>
 
@@ -121,39 +154,54 @@
         </div>
 
         <!-- Блок финансового прогноза -->
-        <div class="finance-card mb-4" id="forecast-card">
+        <div class="finance-card forecast-card mb-4" id="forecast-card">
             <div class="finance-card-header">
-                <h2><i class="bi bi-graph-up"></i> Финансовый прогноз</h2>
+                <div class="finance-card-title">
+                    <i class="bi bi-graph-up me-2 text-info"></i>
+                    <h2>Финансовый прогноз</h2>
+                </div>
+                <small class="text-muted d-none d-md-inline">Нажмите на строку для детализации</small>
             </div>
             <div class="finance-card-body">
                 <div class="table-responsive">
                     <table class="table table-borderless forecast-table">
                         <thead>
                             <tr>
-                                <th>Название</th>
-                                <th>В месяц</th>
-                                <th>В день</th>
-                                <th>В год</th>
-                                <th>За 10 лет</th>
+                                <th><i class="bi bi-tag me-1"></i>Категория</th>
+                                <th><i class="bi bi-calendar-month me-1"></i>Месяц</th>
+                                <th><i class="bi bi-calendar-day me-1"></i>День</th>
+                                <th><i class="bi bi-calendar-year me-1"></i>Год</th>
+                                <th><i class="bi bi-hourglass me-1"></i>10 лет</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="income-row expandable">
-                                <td><i class="bi bi-chevron-right me-1 toggle-icon"></i> Доходы</td>
+                                <td>
+                                    <i class="bi bi-chevron-right me-1 toggle-icon"></i>
+                                    <i class="bi bi-arrow-up-circle text-success me-1"></i>
+                                    Доходы
+                                </td>
                                 <td id="monthly-income">0 ₽</td>
                                 <td id="daily-income">0 ₽</td>
                                 <td id="yearly-income">0 ₽</td>
                                 <td id="decade-income">0 ₽</td>
                             </tr>
                             <tr class="expense-row expandable">
-                                <td><i class="bi bi-chevron-right me-1 toggle-icon"></i> Расходы</td>
+                                <td>
+                                    <i class="bi bi-chevron-right me-1 toggle-icon"></i>
+                                    <i class="bi bi-arrow-down-circle text-danger me-1"></i>
+                                    Расходы
+                                </td>
                                 <td id="monthly-expense">0 ₽</td>
                                 <td id="daily-expense">0 ₽</td>
                                 <td id="yearly-expense">0 ₽</td>
                                 <td id="decade-expense">0 ₽</td>
                             </tr>
                             <tr class="balance-row">
-                                <td>Остаток</td>
+                                <td>
+                                    <i class="bi bi-wallet2 text-primary me-1"></i>
+                                    Остаток
+                                </td>
                                 <td id="monthly-balance">0 ₽</td>
                                 <td id="daily-balance">0 ₽</td>
                                 <td id="yearly-balance">0 ₽</td>
