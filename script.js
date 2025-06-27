@@ -6,28 +6,7 @@ let currentFilter = 'all';
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    // Обработка пасхального баннера
-    const easterBanner = document.getElementById('easter-banner');
-    const closeEasterBtn = document.getElementById('easter-close-btn');
 
-    if (easterBanner && closeEasterBtn) {
-        // Проверяем, закрывал ли пользователь баннер ранее
-        const isEasterBannerClosed = localStorage.getItem('easterBannerClosed');
-        
-        if (!isEasterBannerClosed) {
-            // Показываем баннер
-            easterBanner.style.display = 'block';
-            document.body.classList.add('has-easter-banner');
-            
-            // Обработчик закрытия баннера
-            closeEasterBtn.addEventListener('click', function() {
-                easterBanner.style.display = 'none';
-                document.body.classList.remove('has-easter-banner');
-                // Запоминаем, что пользователь закрыл баннер
-                localStorage.setItem('easterBannerClosed', 'true');
-            });
-        }
-    }
 
     // Загружаем данные из localStorage, если они есть
     loadData();
