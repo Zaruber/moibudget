@@ -1479,29 +1479,40 @@ function updateBalanceChart() {
     const daysLabels = Array.from({length: daysInMonth}, (_, i) => `${i + 1}`);
     
     // Инициализируем массивы для данных
-    const dailyChanges = Array(daysInMonth).fill(0); // Изменения за день
-    const runningBalance = Array(daysInMonth).fill(0); // Текущий остаток на каждый день
+    const dailyTransactions = Array.from({length: daysInMonth}, () => ({ incomes: [], expenses: [], change: 0 }));
+    const runningBalance = Array(daysInMonth).fill(0);
     
-    // Рассчитываем ежедневные изменения в балансе
+    // Собираем доходы по дням
     incomes.forEach(income => {
         const day = income.paymentDay - 1; // Индексация с 0
         if (day >= 0 && day < daysInMonth) {
-            dailyChanges[day] += calculateMonthlyIncome(income);
+            const amount = calculateMonthlyIncome(income);
+            dailyTransactions[day].incomes.push({
+                name: income.name,
+                amount: amount,
+                frequency: getFrequencyText(income.frequency)
+            });
+            dailyTransactions[day].change += amount;
         }
     });
     
-    // Вычитаем расходы
+    // Собираем расходы по дням
     [...fixedExpenses, ...variableExpenses].forEach(expense => {
         const day = expense.paymentDay - 1; // Индексация с 0
         if (day >= 0 && day < daysInMonth) {
-            dailyChanges[day] -= parseFloat(expense.amount);
+            const amount = parseFloat(expense.amount) || 0;
+            dailyTransactions[day].expenses.push({
+                name: expense.name,
+                amount: amount
+            });
+            dailyTransactions[day].change -= amount;
         }
     });
     
     // Рассчитываем баланс на каждый день месяца нарастающим итогом
     let balance = 0;
     for (let i = 0; i < daysInMonth; i++) {
-        balance += dailyChanges[i];
+        balance += dailyTransactions[i].change;
         runningBalance[i] = balance;
     }
     
@@ -1515,33 +1526,59 @@ function updateBalanceChart() {
     // Проверяем, является ли устройство мобильным
     const isMobile = window.innerWidth <= 576;
     
+    // Создаем датасеты для графика
+    const datasets = [
+        {
+            label: 'Остаток на конец дня',
+            data: runningBalance,
+            borderColor: '#2563eb',
+            backgroundColor: (context) => {
+                const ctx = context.chart.ctx;
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(37, 99, 235, 0.1)');
+                gradient.addColorStop(1, 'rgba(37, 99, 235, 0.01)');
+                return gradient;
+            },
+            tension: 0.2,
+            pointRadius: (context) => {
+                const day = context.dataIndex + 1;
+                const hasTransactions = dailyTransactions[context.dataIndex].incomes.length > 0 || 
+                                     dailyTransactions[context.dataIndex].expenses.length > 0;
+                return hasTransactions ? (isMobile ? 4 : 5) : (isMobile ? 2 : 3);
+            },
+            pointBackgroundColor: (context) => {
+                const day = context.dataIndex + 1;
+                const hasTransactions = dailyTransactions[context.dataIndex].incomes.length > 0 || 
+                                     dailyTransactions[context.dataIndex].expenses.length > 0;
+                return hasTransactions ? '#dc2626' : '#2563eb';
+            },
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            borderWidth: isMobile ? 2 : 3,
+            fill: true
+        }
+    ];
+    
     // Создаем новый график
     window.balanceChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: daysLabels,
-            datasets: [
-                {
-                    label: 'Остаток',
-                    data: runningBalance,
-                    fill: false,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    tension: 0.1,
-                    pointRadius: isMobile ? 3 : 3,
-                    borderWidth: isMobile ? 2 : 3,
-                    fill: true
-                }
-            ]
+            datasets: datasets
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
             scales: {
                 y: {
                     beginAtZero: false,
                     grid: {
-                        color: 'rgba(200, 200, 200, 0.1)'
+                        color: 'rgba(200, 200, 200, 0.1)',
+                        drawBorder: false
                     },
                     ticks: {
                         callback: function(value) {
@@ -1550,13 +1587,21 @@ function updateBalanceChart() {
                         font: {
                             size: isMobile ? 11 : 12
                         },
-                        maxTicksLimit: isMobile ? 6 : 8
+                        maxTicksLimit: isMobile ? 6 : 8,
+                        color: '#6b7280'
                     }
                 },
                 x: {
+                    grid: {
+                        display: false
+                    },
                     title: {
                         display: !isMobile,
-                        text: 'День месяца'
+                        text: 'День месяца',
+                        color: '#6b7280',
+                        font: {
+                            size: 12
+                        }
                     },
                     ticks: {
                         font: {
@@ -1564,25 +1609,63 @@ function updateBalanceChart() {
                         },
                         maxRotation: 0,
                         autoSkip: true,
-                        maxTicksLimit: isMobile ? 10 : 15
+                        maxTicksLimit: isMobile ? 10 : 15,
+                        color: '#6b7280'
                     }
                 }
             },
             plugins: {
                 tooltip: {
+                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                    titleColor: '#f9fafb',
+                    bodyColor: '#f9fafb',
+                    borderColor: '#374151',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    padding: 12,
                     callbacks: {
                         title: function(tooltipItems) {
-                            return `${tooltipItems[0].label} ${monthName}`;
+                            const day = parseInt(tooltipItems[0].label);
+                            return `${day} ${monthName} ${currentYear}`;
+                        },
+                        beforeBody: function(tooltipItems) {
+                            const dayIndex = tooltipItems[0].dataIndex;
+                            const transactions = dailyTransactions[dayIndex];
+                            
+                            let lines = [];
+                            
+                            // Добавляем доходы
+                            if (transactions.incomes.length > 0) {
+                                lines.push('📈 ДОХОДЫ:');
+                                transactions.incomes.forEach(income => {
+                                    lines.push(`  • ${income.name}: +${formatNumber(income.amount)} ₽ ${income.frequency}`);
+                                });
+                                lines.push(''); // Пустая строка
+                            }
+                            
+                            // Добавляем расходы
+                            if (transactions.expenses.length > 0) {
+                                lines.push('📉 РАСХОДЫ:');
+                                transactions.expenses.forEach(expense => {
+                                    lines.push(`  • ${expense.name}: -${formatNumber(expense.amount)} ₽`);
+                                });
+                                lines.push(''); // Пустая строка
+                            }
+                            
+                            // Добавляем итоговое изменение за день
+                            if (Math.abs(transactions.change) > 0) {
+                                const changeText = transactions.change > 0 ? 
+                                    `💰 Поступление за день: +${formatNumber(transactions.change)} ₽` :
+                                    `💸 Расход за день: ${formatNumber(transactions.change)} ₽`;
+                                lines.push(changeText);
+                                lines.push(''); // Пустая строка
+                            }
+                            
+                            return lines;
                         },
                         label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.y !== null) {
-                                label += formatNumber(context.parsed.y) + ' ₽';
-                            }
-                            return label;
+                            return `💳 Остаток на конец дня: ${formatNumber(context.parsed.y)} ₽`;
                         }
                     }
                 },
@@ -1591,11 +1674,13 @@ function updateBalanceChart() {
                 },
                 title: {
                     display: true,
-                    text: isMobile ? `${monthName} ${currentYear}` : `Динамика остатка: ${monthName} ${currentYear}`,
+                    text: isMobile ? `${monthName} ${currentYear}` : `💰 Календарь остатков: ${monthName} ${currentYear}`,
                     font: {
-                        size: isMobile ? 14 : 16
+                        size: isMobile ? 14 : 16,
+                        weight: 600
                     },
-                    padding: isMobile ? 5 : 10
+                    color: '#1f2937',
+                    padding: isMobile ? 8 : 15
                 }
             }
         }
@@ -1603,32 +1688,41 @@ function updateBalanceChart() {
     
     // Маркер текущего дня
     if (currentDay > 0 && currentDay <= daysInMonth) {
-        // Добавляем вертикальную линию для текущего дня
-        const currentDayLine = {
-            type: 'line',
-            xMin: currentDay - 0.5,
-            xMax: currentDay - 0.5,
-            borderColor: 'rgba(255, 99, 132, 0.8)',
-            borderWidth: isMobile ? 1.5 : 2,
-            borderDash: [5, 5],
-            label: {
-                enabled: !isMobile,
-                content: 'Сегодня',
-                position: 'top'
-            }
+        // Добавляем специальное выделение для текущего дня
+        const currentDayDataset = {
+            label: 'Сегодня',
+            data: Array(daysInMonth).fill(null),
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            showLine: false
         };
         
-        // Добавляем аннотацию, если у графика уже есть аннотации
-        if (!window.balanceChart.options.plugins.annotation) {
-            window.balanceChart.options.plugins.annotation = {
-                annotations: {
-                    currentDayLine
-                }
-            };
-        } else {
-            window.balanceChart.options.plugins.annotation.annotations.currentDayLine = currentDayLine;
-        }
+        currentDayDataset.data[currentDay - 1] = runningBalance[currentDay - 1];
         
-        window.balanceChart.update();
+        // Обновляем точку текущего дня
+        const originalData = window.balanceChart.data.datasets[0].data;
+        const currentDayValue = originalData[currentDay - 1];
+        
+        // Добавляем аннотацию текущего дня
+        setTimeout(() => {
+            const meta = window.balanceChart.getDatasetMeta(0);
+            if (meta.data[currentDay - 1]) {
+                const point = meta.data[currentDay - 1];
+                const ctx = window.balanceChart.ctx;
+                
+                // Рисуем специальную метку для текущего дня
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = '#dc2626';
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.restore();
+            }
+        }, 100);
     }
 } 

@@ -130,7 +130,7 @@
                             <span class="balance-label">Текущий остаток</span>
                         </div>
                         <small class="text-muted d-none d-sm-block">
-                            <i class="bi bi-info-circle me-1"></i>Нажмите для отображения графика
+                            <i class="bi bi-info-circle me-1"></i>Нажмите для календаря остатков
                         </small>
                     </div>
                     <button class="btn btn-sm btn-outline-info d-inline d-sm-none" id="toggle-chart-btn">
@@ -146,7 +146,11 @@
         <!-- График баланса (скрыт по умолчанию) -->
         <div class="finance-card mb-4" id="balance-chart-card" style="display: none;">
             <div class="finance-card-header">
-                <h2><i class="bi bi-graph-up-arrow"></i> Динамика остатка</h2>
+                <div class="finance-card-title">
+                    <i class="bi bi-calendar-week me-2 text-info"></i>
+                    <h2>Календарь остатков</h2>
+                </div>
+                <small class="text-muted d-none d-md-inline">Баланс по дням с детализацией операций</small>
             </div>
             <div class="finance-card-body">
                 <canvas id="balance-chart" height="250"></canvas>
